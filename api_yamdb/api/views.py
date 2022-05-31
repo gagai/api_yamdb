@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 
-
+from .mixins import ListCreateDestroyViewSet
 from reviews.models import User, Category, Genre, Title, Review, Comment
 # from .permissions import IsAuthorOrReadOnly
 from api.serializers import (
@@ -19,11 +19,13 @@ class UserViewSet(viewsets.ModelViewSet):
     # делает Влад
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ListCreateDestroyViewSet):
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ListCreateDestroyViewSet):
+    queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
 
