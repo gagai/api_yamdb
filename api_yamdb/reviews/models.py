@@ -1,4 +1,11 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class User(AbstractUser):
+    """Пользователи и их роли"""
+    pass
+    # делает Влад
 
 
 class Category(models.Model):
@@ -47,7 +54,7 @@ class Review(models.Model):
     # делает Кирилл
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     """Комментарии к отзывам (Review)"""
     pass
     # делает Кирилл
