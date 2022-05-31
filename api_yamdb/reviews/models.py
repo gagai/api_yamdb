@@ -1,6 +1,8 @@
+from tkinter import CASCADE
 from django.db import models
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 class Category(models.Model):
     """Категории (типы: фильм, книга или песенка) произведений"""
     name = models.CharField(max_length=200)
@@ -29,7 +31,7 @@ class Title(models.Model):
         related_name="сategory", blank=True, null=True
     )
     genres = models.ManyToManyField(
-        Genre, on_delete=models.SET_NULL,
+        Genre,
         related_name="genres", blank=True, null=True
     )
     rating = models.IntegerField(
@@ -43,11 +45,23 @@ class Title(models.Model):
 
 class Review(models.Model):
     """Отзывы на произведения (Title)"""
-    pass
-    # делает Кирилл
+    title_id = models.ForeignKey(Title, on_delete=models.CASCADE, related_name='reviews')
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_author')
+    score = models.IntegerField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:15]
+
 
 
 class Comments(models.Model):
     """Комментарии к отзывам (Review)"""
-    pass
-    # делает Кирилл
+    review_id = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments_author')
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:15]
