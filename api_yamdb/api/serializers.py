@@ -26,8 +26,11 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        fields = ('id', 'title_id', 'text', 'author', 'score', 'pub_date')
+        model = Review
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    pass
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'review_id', 'text', 'author', 'pub_date')
