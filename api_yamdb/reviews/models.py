@@ -61,7 +61,6 @@ class Review(models.Model):
         return self.text[:15]
 
 
-
 class Comment(models.Model):
     """Комментарии к отзывам (Review)"""
     review_id = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')

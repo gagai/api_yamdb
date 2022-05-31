@@ -9,7 +9,7 @@ from api.serializers import (
     GenreSerializer,
     TitleSerializer,
     ReviewSerializer,
-    CommentsSerializer
+    CommentSerializer
 )
 
 
@@ -40,12 +40,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return title.reviews.all()
 
 
-class CommentsViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentsSerializer
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
         review_id = self.kwargs.get('review_id')
         title = get_object_or_404(Review, title_id=title_id)
         review = get_object_or_404(title, review_id=review_id)
-        return review.comments.all()
+        return review.comment.all()
