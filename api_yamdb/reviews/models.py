@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-
 class User(AbstractUser):
     """Пользователи и их роли"""
     pass
@@ -51,9 +50,17 @@ class Title(models.Model):
 
 class Review(models.Model):
     """Отзывы на произведения (Title)"""
-    title_id = models.ForeignKey(Title, on_delete=models.CASCADE, related_name='reviews')
+    title_id = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
     text = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_author')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews_author'
+    )
     score = models.IntegerField()
     pub_date = models.DateTimeField(auto_now_add=True)
 
@@ -63,9 +70,17 @@ class Review(models.Model):
 
 class Comment(models.Model):
     """Комментарии к отзывам (Review)"""
-    review_id = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+    review_id = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
     text = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments_author')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments_author'
+    )
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
