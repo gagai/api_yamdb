@@ -1,7 +1,9 @@
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
 from .mixins import ListCreateDestroyViewSet
+from .permissions import IsAdminOrReadOnly
 from reviews.models import User, Category, Genre, Title, Review, Comment
 # from .permissions import IsAuthorOrReadOnly
 from api.serializers import (
@@ -22,16 +24,21 @@ class UserViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class GenreViewSet(ListCreateDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('category', 'genre', 'name', 'year')
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

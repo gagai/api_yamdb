@@ -10,7 +10,7 @@ class User(AbstractUser):
 
 class Category(models.Model):
     """Категории (типы: фильм, книга или песенка) произведений"""
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
@@ -19,7 +19,7 @@ class Category(models.Model):
 
 class Genre(models.Model):
     """Категории жанров"""
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
@@ -33,11 +33,12 @@ class Title(models.Model):
     year = models.IntegerField()
     сategory = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name="сategory", blank=True, null=True
+        related_name="сategory", null=True
     )
+    description = models.TextField(null=True, blank=True)
     genres = models.ManyToManyField(
         Genre,
-        related_name="genres", blank=True, null=True
+        related_name="genres", null=True
     )
     rating = models.IntegerField(
         null=True,
