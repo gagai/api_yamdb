@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
- 
+
+from .mixins import ListCreateDestroyViewSet
 from reviews.models import User, Category, Genre, Title, Review, Comment
 # from .permissions import IsAuthorOrReadOnly
 from api.serializers import (
@@ -9,7 +10,7 @@ from api.serializers import (
     GenreSerializer,
     TitleSerializer,
     ReviewSerializer,
-    CommentsSerializer
+    CommentSerializer
 )
 
 
@@ -18,11 +19,13 @@ class UserViewSet(viewsets.ModelViewSet):
     # делает Влад
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ListCreateDestroyViewSet):
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ListCreateDestroyViewSet):
+    queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
 
@@ -40,12 +43,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return title.reviews.all()
 
 
-class CommentsViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentsSerializer
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
         review_id = self.kwargs.get('review_id')
         title = get_object_or_404(Review, title_id=title_id)
         review = get_object_or_404(title, review_id=review_id)
-        return review.comments.all()
+        return review.comment.all()

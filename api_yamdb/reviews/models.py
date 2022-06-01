@@ -3,9 +3,9 @@ from django.db import models
 from users.models import User
 
 
-
-# class User(AbstractUser):
-# pass
+class User(AbstractUser):
+    """Пользователи и их роли"""
+    pass
     # делает Влад
 
 
