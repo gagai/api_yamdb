@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from users.models import User
 
 
 class User(AbstractUser):
@@ -40,7 +41,7 @@ class Title(models.Model):
         Genre,
         related_name="genres", null=True
     )
-    rating = models.IntegerField(
+    rating = models.FloatField(
         null=True,
         default=None
     )
@@ -54,14 +55,12 @@ class Review(models.Model):
     title_id = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='reviews'
-    )
+        related_name='reviews')
     text = models.TextField()
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='reviews_author'
-    )
+        related_name='reviews_author')
     score = models.IntegerField()
     pub_date = models.DateTimeField(auto_now_add=True)
 
@@ -74,14 +73,12 @@ class Comment(models.Model):
     review_id = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
-        related_name='comments'
-    )
+        related_name='comments')
     text = models.TextField()
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='comments_author'
-    )
+        related_name='comments_author')
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
