@@ -24,17 +24,14 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
-<<<<<<< HEAD
     rating = serializers.SerializerMethodField()
-=======
->>>>>>> 431c78272e2dbdba97b717d67d733710ac0a1b88
 
     class Meta:
         fields = '__all__'
         model = Title
 
     def get_rating(self, obj):
-        scores = Review.objects.filter(title_id=obj.id)
+        scores = Review.objects.filter(title_id=obj.id).score
         return sum(scores) / len(scores)
 
 
