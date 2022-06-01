@@ -32,7 +32,7 @@ class Title(models.Model):
     description = models.TextField(null=True, blank=True)
     genres = models.ManyToManyField(
         Genre,
-        related_name="genres", null=True
+        related_name="genres"
     )
     rating = models.FloatField(
         null=True,
