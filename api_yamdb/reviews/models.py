@@ -1,5 +1,15 @@
 from django.db import models
 from users.models import User
+CHOICES = ((1, 1),
+           (2, 2),
+           (3, 3),
+           (4, 4),
+           (5, 5),
+           (6, 6),
+           (7, 7),
+           (8, 8),
+           (9, 9),
+           (10, 10))
 
 
 class Category(models.Model):
@@ -54,7 +64,7 @@ class Review(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='reviews_author')
-    score = models.IntegerField()
+    score = models.IntegerField(choices=CHOICES)
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
