@@ -1,5 +1,9 @@
 from django.db import models
+
 from users.models import User
+from api.validators import validate_year
+
+
 CHOICES = ((1, 1),
            (2, 2),
            (3, 3),
@@ -34,7 +38,7 @@ class Title(models.Model):
     """Произведения, к которым пишут отзывы
     (определённый фильм, книга или песенка)"""
     name = models.TextField()
-    year = models.IntegerField()
+    year = models.IntegerField(validators=[validate_year])
     сategory = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
         related_name="сategory", null=True
