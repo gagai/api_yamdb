@@ -60,6 +60,7 @@ class IsAdmin(permissions.BasePermission):
                 )
 
 
+# Оставлять ли?
 class IsStuffOrAuthorOrReadOnly(permissions.BasePermission):
 
 
