@@ -3,9 +3,9 @@ from django.db import models
 
 
 class User(AbstractUser):
-    USER = 'USR'
-    MODERATOR = 'MDR'
-    ADMIN = 'ADM'
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
     USER_ROLE_CHOICES = [
         (USER, 'user'),
         (MODERATOR, 'moderator'),
@@ -18,9 +18,9 @@ class User(AbstractUser):
     )
     role = models.CharField(
         verbose_name='Роль',
-        max_length=3,
         choices=USER_ROLE_CHOICES,
-        default=USER
+        default=USER,
+        blank=False
     )
 
     def is_user(self):
