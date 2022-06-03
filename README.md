@@ -1,9 +1,13 @@
-# Yatube API
+# YaMDb API
 
-This is an API for yet another one social media - Yatube
-Here you can create your own posts and comment posts of other users
+Проект YaMDb собирает отзывы (Review) пользователей на произведения (Titles). Произведения делятся на категории: «Книги», «Фильмы», «Музыка». Список категорий (Category) может быть расширен администратором (например, можно добавить категорию «Изобразительное искусство» или «Ювелирка»).
+Сами произведения в YaMDb не хранятся, здесь нельзя посмотреть фильм или послушать музыку.
+В каждой категории есть произведения: книги, фильмы или музыка. Например, в категории «Книги» могут быть произведения «Винни-Пух и все-все-все» и «Марсианские хроники», а в категории «Музыка» — песня «Давеча» группы «Насекомые» и вторая сюита Баха.
+Произведению может быть присвоен жанр (Genre) из списка предустановленных (например, «Сказка», «Рок» или «Артхаус»). Новые жанры может создавать только администратор.
+Благодарные или возмущённые пользователи оставляют к произведениям текстовые отзывы (Review) и ставят произведению оценку в диапазоне от одного до десяти (целое число); из пользовательских оценок формируется усреднённая оценка произведения — рейтинг (целое число). На одно произведение пользователь может оставить только один отзыв.
 
-## Install
+---
+## Установка
 
 ```bash
 python3 -m venv venv    # use 'python' instead 'python3' for Windows
@@ -11,105 +15,96 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-## Run the app
+## Запуск приложения
 
 ```bash
 python3 manage.py runserver    # use 'python' instead 'python3' for Windows
 ```
+---
+## Алгоритм регистрации пользователей
+- Пользователь отправляет POST-запрос на добавление нового пользователя с параметрами `email` и `username` на эндпоинт `/api/v1/auth/signup/`.
+- YaMDB отправляет письмо с кодом подтверждения (confirmation_code) на адрес email.
+- Пользователь отправляет POST-запрос с параметрами `username` и `confirmation_code` на эндпоинт `/api/v1/auth/token/`, в ответе на запрос ему приходит token (JWT-токен).
+- При желании пользователь отправляет PATCH-запрос на эндпоинт `/api/v1/users/me/` и заполняет поля в своём профайле (описание полей — в документации).
+---
 
-# REST API
+## Пользовательские роли
+**Аноним** — может просматривать описания произведений, читать отзывы и комментарии.
 
-The REST API to the example app is described below.
+**Аутентифицированный пользователь (user)** — может читать всё, как и Аноним, дополнительно может публиковать отзывы и ставить рейтинг произведениям (фильмам/книгам/песенкам), может комментировать чужие отзывы и ставить им оценки; может редактировать и удалять свои отзывы и комментарии.
 
-## Get list of Posts
+**Модератор (moderator)** — те же права, что и у Аутентифицированного пользователя плюс право удалять и редактировать любые отзывы и комментарии.
 
-### Request
+**Администратор (admin)** — полные права на управление проектом и всем его содержимым. Может создавать и удалять произведения, категории и жанры. Может назначать роли пользователям.
 
-`GET /posts/`
+**Администратор Django** — те же права, что и у роли Администратор.
 
-    http://127.0.0.1:8000/posts/
+---
 
-### Response
+## Аутентификация
+`jwt-token`
 
-    09/May/2022 11:51:12] "GET /api/v1/posts/ HTTP/1.1" 200 863
+Используется аутентификация с использованием JWT-токенов
 
-```json
-[
-    {
-        "id": 1,
-        "author": "Alan",
-        "text": "Ah, hello adventurer and welcome to the town of HoneyWood!",
-        "pub_date": "2022-05-05T20:58:44.401369Z",
-        "image": null,
-        "group": 1
-    },
-    {
-        "id": 2,
-        "author": "Rowan",
-        "text": "Nice day for fishing, ain't it? Hu ha!",
-        "pub_date": "2022-05-05T21:01:41.551591Z",
-        "image": null,
-        "group": 1
-    }
-]
+---
+
+## Примеры запросов к API:
+
+### Регистрация нового пользователя
+```
+POST   /api/v1/auth/signup/
 ```
 
-## Create a new Post
-
-### Request
-
-`POST /post/`
-
-    http://127.0.0.1:8000/posts/
-
-### Response
-
-    [09/May/2022 11:51:23] "POST /api/v1/posts/ HTTP/1.1" 201 110
-
-``` json
-{
-    "id": 9,
-    "author": "Alan",
-    "text": "Hello, world!",
-    "pub_date": "2022-05-09T11:51:23.333972Z",
-    "image": null,
-    "group": null
-}
+### Получение JWT-токена
+```
+POST  /api/v1/auth/token/
 ```
 
-## Get a specific Post
-
-### Request
-
-`GET /post/{id}/`
-
-    http://127.0.0.1:8000/posts/5/
-
-### Response
-
-    [09/May/2022 12:10:07] "GET /api/v1/posts/5/ HTTP/1.1" 200 143
-
-``` json
-{
-    "id": 5,
-    "author": "Samuel",
-    "text": "English, motherforker, do you speak it?!",
-    "pub_date": "2022-05-05T21:04:25.371149Z",
-    "image": null,
-    "group": null
-}
+### Получение списка всех категорий / Добавление новой категории/ Удаление категории
+```
+GET/POST  /api/v1/categories/
+DELETE  /api/v1/categories/{slug}/
 ```
 
-## Other endpoints
+### Получение списка всех жанров / Добавление жанра / Удаление жанра
+```
+GET/POST  /api/v1/genres/
+DELETE  /api/v1/genres/{slug}/
+```
 
-- For groups use same endpoints with post:
-    
-`GET /groups/`
+### Получение списка всех произведений / Добавление произведения 
+```
+GET/POST  /api/v1/titles/
+```
 
-    http://127.0.0.1:8000/groups/
+### Получение информации / Частичное обновление / Удаление произведения
+```
+GET/PATCH/DELETE  /api/v1/titles/{titles_id}/
+```
 
-- For comments use same endpoints with post, but URL should starts with ```/posts/{post_id}```
+### Получение списка всех отзывов / Добавление нового отзыва
+```
+GET/POST  /api/v1/titles/{title_id}/reviews/)
+```
 
-`GET /comments/`
+### Полуение/ Частичное обновление/ Удаление отзыва по id
+```
+GET/PATCH/DELETE /api/v1/titles/{title_id}/reviews/{review_id}/
+```
 
-    http://127.0.0.1:8000/posts/{id}/comments/
+### Получение списка всех комментариев к отзыву / Добавление комментария к отзыву
+```
+GET/POST  /api/v1/titles/{title_id}/reviews/{review_id}/comments/)
+```
+
+### Получение/ Частичное обновление/ Удаление комментария к отзыву
+```
+GET/PATCH/DELETE  /api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}/
+```
+
+---
+## Технологии
+- Django 2.2
+- Python 3.7
+- Django REST Framework
+- ReDoc

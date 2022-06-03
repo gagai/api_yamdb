@@ -37,7 +37,7 @@ class Genre(models.Model):
 class Title(models.Model):
     """Произведения, к которым пишут отзывы
     (определённый фильм, книга или песенка)"""
-    name = models.TextField()
+    name = models.CharField(max_length=256)
     year = models.IntegerField(validators=[validate_year])
     сategory = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
