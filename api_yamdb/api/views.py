@@ -3,11 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
 from .mixins import ListCreateDestroyViewSet
-<<<<<<< HEAD
-from .permissions import IsAdminOrReadOnly, IsAdmin, IsAuthor, IsModerator
-=======
 from .permissions import ReadOnly, IsAuthor, IsModerator, IsAdmin
->>>>>>> 8167fc7ae7c0d781bf948f9286a7a84612be407e
 from reviews.models import User, Category, Genre, Title, Review
 from api.serializers import (
     UserSerializer,
@@ -51,11 +47,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-<<<<<<< HEAD
-    permission_classes = (IsAdmin, IsModerator, IsAuthor)
-=======
     permission_classes = [ReadOnly|IsAuthor|IsModerator]
->>>>>>> 8167fc7ae7c0d781bf948f9286a7a84612be407e
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
@@ -68,11 +60,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-<<<<<<< HEAD
-    permission_classes = (IsAdmin, IsModerator, IsAuthor)
-=======
     permission_classes = [ReadOnly|IsAuthor|IsModerator]
->>>>>>> 8167fc7ae7c0d781bf948f9286a7a84612be407e
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
