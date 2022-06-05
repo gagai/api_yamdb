@@ -31,9 +31,9 @@ class UserViewSet(viewsets.ModelViewSet):
     # делает Влад
 
 
-@api_view(['POST',])
+@api_view(['POST', ])
 @authentication_classes([])
-@permission_classes([AllowAny,])
+@permission_classes([AllowAny, ])
 def sign_up(request):
     if request.method == 'POST':
         serializer = UserSignUpSerializer(data=request.data)
@@ -47,7 +47,7 @@ def sign_up(request):
             confirmation_code = get_confirmation_code()
             text_message = f'{username}, вот твой {confirmation_code}'
             send_mail(
-                recipient_list = [email,],
+                recipient_list=[email, ],
                 subject=f'Проверочный код для пользователя {username}',
                 message=text_message,
                 from_email=None,
