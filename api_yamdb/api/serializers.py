@@ -1,3 +1,4 @@
+from attr import fields
 from rest_framework import serializers
 
 from reviews.models import User, Category, Genre, Title, Review, Comment
@@ -9,6 +10,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "email", "first_name",
                   "last_name", "bio", "role")
+
+
+class UserSignUpSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('email', 'username',)
 
 
 class CategorySerializer(serializers.ModelSerializer):
