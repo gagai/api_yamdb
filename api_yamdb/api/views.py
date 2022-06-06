@@ -28,6 +28,8 @@ from .utils import get_confirmation_code
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (IsAdmin,)
+    lookup_field = "username"
     # делает Влад
 
 
@@ -52,7 +54,7 @@ def sign_up(request):
                 message=text_message,
                 from_email=None,
             )
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -102,7 +104,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         review_id = self.kwargs.get('review_id')
         title = get_object_or_404(Review, title_id=title_id)
         review = get_object_or_404(title, review_id=review_id)
-        return review.comment.all()
+        return review.comments.all()
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -1,4 +1,3 @@
-from attr import fields
 from rest_framework import serializers
 
 from reviews.models import User, Category, Genre, Title, Review, Comment
@@ -44,24 +43,34 @@ class TitleSerializer(serializers.ModelSerializer):
         slug_field='slug', queryset=Category.objects.all()
     )
 
-    class Meta:
-        fields = '__all__'
-        model = Title
-
     def get_rating(self, obj):
         scores = Review.objects.filter(title_id=obj.id).values('score')
         return sum(scores) / len(scores)
 
+    class Meta:
+        fields = '__all__'
+        model = Title
+
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        default=serializers.CurrentUserDefault(),
+        read_only=True
+    )
 
     class Meta:
-        fields = ('id', 'title_id', 'text', 'author', 'score', 'pub_date')
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        default=serializers.CurrentUserDefault(),
+        read_only=True
+    )
 
     class Meta:
-        fields = ('id', 'review_id', 'text', 'author', 'pub_date')
+        fields = ('id', 'text', 'author', 'pub_date')
         model = Comment
