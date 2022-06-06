@@ -27,7 +27,7 @@ class IsAuthor(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_anonymous is True:
             return False
-        return (request.user.role == request.user.is_user()
+        return (request.user.role == request.user.is_user
                 or request.user.is_superuser
                 )
 
@@ -40,7 +40,7 @@ class IsModerator(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_anonymous is True:
             return False
-        return (request.user.role == request.user.is_moderator()
+        return (request.user.role == request.user.is_moderator
                 or request.user.is_superuser
                 )
 
@@ -53,7 +53,7 @@ class IsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.user.is_anonymous is True:
             return False
-        return (request.user.role == request.user.is_admin()
+        return (request.user.role == request.user.is_admin
                 or request.user.is_superuser
                 )
 

@@ -64,6 +64,7 @@ def sign_up(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
+@authentication_classes([])
 @permission_classes([AllowAny,])
 def get_jwt_token(request):
     serializer = TokenSerializer(data=request.data)
