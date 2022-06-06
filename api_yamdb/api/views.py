@@ -24,7 +24,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [ReadOnly|IsAdmin]
+    permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
@@ -32,7 +32,7 @@ class CategoryViewSet(ListCreateDestroyViewSet):
 class GenreViewSet(ListCreateDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = [ReadOnly|IsAdmin]
+    permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
@@ -40,14 +40,14 @@ class GenreViewSet(ListCreateDestroyViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = [ReadOnly|IsAdmin]
+    permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('name', 'year')
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = [ReadOnly|IsAuthor|IsModerator]
+    permission_classes = [ReadOnly | IsAuthor | IsModerator]
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
@@ -60,7 +60,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [ReadOnly|IsAuthor|IsModerator]
+    permission_classes = [ReadOnly | IsAuthor | IsModerator]
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
