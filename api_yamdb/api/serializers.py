@@ -18,6 +18,11 @@ class UserSignUpSerializer(serializers.ModelSerializer):
         fields = ('email', 'username',)
 
 
+class TokenSerializer(serializers.Serializer):
+    username = ...
+    confirmation_code = ...
+
+
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:

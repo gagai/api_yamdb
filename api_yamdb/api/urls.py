@@ -1,9 +1,10 @@
+from lib2to3.pgen2 import token
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .views import (UserViewSet, TitleViewSet, CategoryViewSet, GenreViewSet,
-                    ReviewViewSet, CommentViewSet, sign_up)
+                    ReviewViewSet, CommentViewSet, sign_up, get_jwt_token)
 app_name = 'api'
 
 router = DefaultRouter()
@@ -28,5 +29,6 @@ urlpatterns = [
          TokenObtainPairView.as_view(),
          name='token_obtain_pair'
          ),
-    path('v1/auth/signup/', sign_up, name='sign_up')
+    path('v1/auth/signup/', sign_up, name='sign_up'),
+    path('v1/auth/token/', get_jwt_token, name='auth-token-jwt'),
 ]
