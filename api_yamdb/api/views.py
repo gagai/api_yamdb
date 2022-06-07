@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
 
 from .mixins import ListCreateDestroyViewSet
+from .filters import TitleFilter
 from .permissions import ReadOnly, IsAuthor, IsModerator, IsAdmin
 from reviews.models import User, Category, Genre, Title, Review
 from api.serializers import (
@@ -61,7 +62,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST', ])
-@authentication_classes([])
 @permission_classes([permissions.AllowAny, ])
 def sign_up(request):
     serializer = UserSignUpSerializer(data=request.data)
@@ -82,12 +82,10 @@ def sign_up(request):
 
 
 @api_view(["POST"])
-@authentication_classes([])
 @permission_classes([permissions.AllowAny, ])
 def get_jwt_token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
     user = get_object_or_404(
         User,
         username=serializer.validated_data['username']
@@ -123,7 +121,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('name', 'year')
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.action in ("retrieve", "list"):

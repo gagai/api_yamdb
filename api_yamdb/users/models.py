@@ -11,6 +11,12 @@ class User(AbstractUser):
         (MODERATOR, 'moderator'),
         (ADMIN, 'admin'),
     ]
+    username = models.CharField(
+        verbose_name='Имя пользователя',
+        max_length=150,
+        null=True,
+        unique=True
+    )
     email = models.EmailField(unique=True)
     bio = models.TextField(
         verbose_name='Биография',
@@ -27,7 +33,7 @@ class User(AbstractUser):
     @property
     def is_user(self):
         return self.role == self.USER or self.MODERATOR or self.ADMIN
-    
+
     @property
     def is_moderator(self):
         return self.role == self.MODERATOR
