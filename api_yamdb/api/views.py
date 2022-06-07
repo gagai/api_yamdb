@@ -19,6 +19,7 @@ from api.serializers import (
     CategorySerializer,
     GenreSerializer,
     TitleSerializer,
+    ReadOnlyTitleSerializer,
     ReviewSerializer,
     CommentSerializer
 )
@@ -64,6 +65,7 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = "slug"
 
 
 class GenreViewSet(ListCreateDestroyViewSet):
@@ -72,6 +74,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
     permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = "slug"
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -80,6 +83,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('name', 'year')
+
+    def get_serializer_class(self):
+        if self.action in ("retrieve", "list"):
+            return ReadOnlyTitleSerializer
+        return TitleSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
