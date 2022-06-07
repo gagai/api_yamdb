@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from reviews.models import User, Category, Genre, Title, Review, Comment
+from reviews.models import TitleGenre, User, Category, Genre, Title, Review, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -81,12 +81,28 @@ class TitleSerializer(serializers.ModelSerializer):
         slug_field='slug', many=True, queryset=Genre.objects.all()
     )
     category = serializers.SlugRelatedField(
-        slug_field='slug', queryset=Category.objects.all()
+        slug_field='slug', many=False, queryset=Category.objects.all()
     )
 
     def get_rating(self, obj):
-        scores = Review.objects.filter(title_id=obj.id).values('score')
-        return sum(scores) / len(scores)
+        try:
+            scores = Review.objects.filter(title_id=obj.id).values('score')
+            return sum(scores) / len(scores)
+        except ZeroDivisionError:
+            pass
+
+    def create(self, validated_data):
+        genre_data = validated_data.pop('genre')
+        print('111111111111111111111111111111111111')
+        category = validated_data.pop('category')
+        print('222222222222222222222222222222222222')
+        title = Title.objects.create(**validated_data)
+        print('333333333333333333333333333333333333')
+        title.genre.set(genre_data)
+        print('444444444444444444444444444444444444')
+        category.titles.add(title)
+        print('555555555555555555555555555555555555')
+        return title
 
     class Meta:
         model = Title
