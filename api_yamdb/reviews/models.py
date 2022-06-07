@@ -41,12 +41,12 @@ class Title(models.Model):
     year = models.IntegerField(validators=[validate_year])
     сategory = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
-        related_name="сategory", null=True
+        related_name="titles", null=True
     )
     description = models.TextField(null=True, blank=True)
-    genres = models.ManyToManyField(
+    genre = models.ManyToManyField(
         Genre,
-        related_name="genres"
+        related_name="titles"
     )
     rating = models.FloatField(
         null=True,
