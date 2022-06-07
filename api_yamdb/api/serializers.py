@@ -89,8 +89,8 @@ class TitleSerializer(serializers.ModelSerializer):
         return sum(scores) / len(scores)
 
     class Meta:
-        fields = '__all__'
         model = Title
+        fields = '__all__'
 
 
 class ReadOnlyTitleSerializer(serializers.ModelSerializer):
