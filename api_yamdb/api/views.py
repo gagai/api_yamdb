@@ -2,11 +2,11 @@ from rest_framework import viewsets, filters, status
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
-    permission_classes
+    permission_classes,
+    action
 )
-from rest_framework.permissions import AllowAny
+from rest_framework import permissions
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework_simplejwt.tokens import AccessToken
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
@@ -19,6 +19,7 @@ from reviews.models import User, Category, Genre, Title, Review
 from api.serializers import (
     UserSerializer,
     UserSignUpSerializer,
+    UserEditSerializer,
     TokenSerializer,
     CategorySerializer,
     GenreSerializer,
@@ -34,39 +35,55 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = (IsAdmin,)
     lookup_field = "username"
-    # делает Влад
+
+    @action(
+        methods=["get", "patch"],
+        detail=False,
+        url_path="me",
+        permission_classes=[permissions.IsAuthenticated],
+        serializer_class=UserEditSerializer,
+    )
+    def users_own_profile(self, request):
+        user = request.user
+        if request.method == "GET":
+            serializer = self.get_serializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.method == "PATCH":
+            serializer = self.get_serializer(
+                user,
+                data=request.data,
+                partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 @api_view(['POST', ])
 @authentication_classes([])
-@permission_classes([AllowAny, ])
+@permission_classes([permissions.AllowAny, ])
 def sign_up(request):
     serializer = UserSignUpSerializer(data=request.data)
-    if serializer.is_valid():
-        username = serializer.validated_data.get('username')
-        # Добавить в валидатор сериалайзера
-        if username == 'me':
-            return Response(
-                serializer.data, status=status.HTTP_400_BAD_REQUEST
-            )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    user = get_object_or_404(
+        User,
+        username=serializer.validated_data["username"]
+    )
+    confirmation_code = default_token_generator.make_token(user)
+    send_mail(
+        subject="YaMDb registration",
+        message=f"Your confirmation code: {confirmation_code}",
+        from_email=None,
+        recipient_list=[user.email],
+    )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-        email = serializer.validated_data.get('email')
-        user = get_object_or_404(
-            User,
-            username=username
-        )
-        confirmation_code = default_token_generator.make_token(user)
-        send_mail(
-            recipient_list=[email, ],
-            subject=f'Проверочный код для пользователя {username}',
-            message=f'{username}, вот твой {confirmation_code}',
-            from_email=None,
-        )
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 @authentication_classes([])
-@permission_classes([AllowAny,])
+@permission_classes([permissions.AllowAny, ])
 def get_jwt_token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -79,8 +96,9 @@ def get_jwt_token(request):
         user, serializer.validated_data['confirmation_code']
     ):
         token = AccessToken.for_user(user)
-        return Response({'token': str(token)}, status=status.HTTP_201_CREATED)
+        return Response({'token': str(token)}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
