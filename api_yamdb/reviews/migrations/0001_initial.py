@@ -51,6 +51,24 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='TitleGenre',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('genre', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.Genre')),
+                ('title', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.Title')),
+            ],
+        ),
+        migrations.AddField(
+            model_name='title',
+            name='genre',
+            field=models.ManyToManyField(related_name='titles', through='reviews.TitleGenre', to='reviews.Genre'),
+        ),
+        migrations.AddField(
+            model_name='title',
+            name='сategory',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='titles', to='reviews.Category'),
+        ),
+        migrations.CreateModel(
             name='Review',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

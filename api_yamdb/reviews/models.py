@@ -64,6 +64,7 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
+
     """Отзывы на произведения (Title)"""
 
     title_id = models.ForeignKey(
