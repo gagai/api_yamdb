@@ -105,6 +105,10 @@ class ReadOnlyTitleSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    title = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
     author = serializers.SlugRelatedField(
         slug_field='username',
         default=serializers.CurrentUserDefault(),
@@ -112,7 +116,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = ('id', 'title_id', 'text', 'author', 'score', 'pub_date')
+        fields = '__all__'
         model = Review
 
 
