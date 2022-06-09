@@ -47,7 +47,7 @@ class GenreTitle(models.Model):
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.title}, {self.genre}'
+        return f"{self.title}, {self.genre}"
 
 
 class Review(models.Model):
@@ -60,10 +60,12 @@ class Review(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="reviews_author"
     )
-    score = models.PositiveSmallIntegerField(validators=[
-        MinValueValidator(1, 'от 1 до 10'),
-        MaxValueValidator(10, 'от 1 до 10')
-    ])
+    score = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1, "от 1 до 10"),
+            MaxValueValidator(10, "от 1 до 10"),
+        ]
+    )
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -72,8 +74,7 @@ class Review(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['title', 'author'],
-                name='unique_review'
+                fields=["title", "author"], name="unique_review"
             ),
         ]
 
