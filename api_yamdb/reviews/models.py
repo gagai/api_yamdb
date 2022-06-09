@@ -1,21 +1,8 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from users.models import User
 from api.validators import validate_year
-
-
-CHOICES = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10),
-)
 
 
 class Category(models.Model):
@@ -49,7 +36,7 @@ class Title(models.Model):
     )
     description = models.TextField(null=True, blank=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle")
-    rating = models.FloatField(null=True, default=None)
+    rating = models.PositiveSmallIntegerField(null=True, default=None)
 
     def __str__(self):
         return self.name
@@ -73,11 +60,22 @@ class Review(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="reviews_author"
     )
-    score = models.IntegerField(choices=CHOICES)
+    score = models.PositiveSmallIntegerField(validators=[
+        MinValueValidator(1, 'от 1 до 10'),
+        MaxValueValidator(10, 'от 1 до 10')
+    ])
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.text[:15]
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='unique_review'
+            ),
+        ]
 
 
 class Comment(models.Model):
