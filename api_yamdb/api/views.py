@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
@@ -106,6 +107,18 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnly | IsAdmin]
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        print('###################################')
+        print(instance.rating)
+        avg_rating = (
+            Review.objects.filter(title=instance.id)
+            .aggregate(rating=Avg('score')))
+        Title.objects.filter(id=instance.id).update(**avg_rating)
+        instance.refresh_from_db()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.action in ("retrieve", "list"):
