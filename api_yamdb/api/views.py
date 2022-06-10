@@ -46,23 +46,12 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-@api_view(
-    [
-        "POST",
-    ]
-)
-@permission_classes(
-    [
-        permissions.AllowAny,
-    ]
-)
+@api_view(["POST", ])
+@permission_classes([permissions.AllowAny, ])
 def sign_up(request):
     serializer = UserSignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
-    user = get_object_or_404(
-        User, username=serializer.validated_data["username"]
-    )
+    user = serializer.save()
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
         subject="YaMDb registration",

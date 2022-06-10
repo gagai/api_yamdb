@@ -58,14 +58,14 @@ class TokenSerializer(serializers.Serializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ("name", "slug")
+        exclude = ('id',)
         lookup_field = "slug"
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ("name", "slug")
+        exclude = ('id',)
         lookup_field = "slug"
 
 
