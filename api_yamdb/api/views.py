@@ -110,8 +110,6 @@ class TitleViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        print('###################################')
-        print(instance.rating)
         avg_rating = (
             Review.objects.filter(title=instance.id)
             .aggregate(rating=Avg('score')))
