@@ -56,7 +56,7 @@ class Title(models.Model):
         blank=True,
         verbose_name='Описание'
     )
-    genre = models.ManyToManyField(Genre, through="GenreTitle")
+    genre = models.ManyToManyField(Genre)
     rating = models.PositiveSmallIntegerField(
         null=True,
         default=None,
@@ -69,20 +69,6 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class GenreTitle(models.Model):
-    title = models.ForeignKey(
-        Title,
-        on_delete=models.CASCADE
-    )
-    genre = models.ForeignKey(
-        Genre,
-        on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return f"{self.title}, {self.genre}"
 
 
 class Review(models.Model):
