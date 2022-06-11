@@ -113,9 +113,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         avg_rating = (
             Review.objects.filter(title=instance.id)
             .aggregate(rating=Avg('score')))
-        Title.objects.filter(id=instance.id).update(**avg_rating)
-        instance.refresh_from_db()
-        serializer = self.get_serializer(instance)
+        serializer = self.get_serializer(instance, context=avg_rating)
         return Response(serializer.data)
 
     def get_serializer_class(self):
