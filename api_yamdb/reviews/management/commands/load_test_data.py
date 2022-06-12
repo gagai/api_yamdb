@@ -3,7 +3,7 @@ import csv
 from django.core.management.base import BaseCommand
 
 from api_yamdb.settings import BASE_DIR
-from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
+from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
 
 file_model_dict = {
@@ -11,7 +11,6 @@ file_model_dict = {
     'category.csv': Category,
     'genre.csv': Genre,
     'titles.csv': Title,
-    'genre_title.csv': GenreTitle,
     'review.csv': Review,
     'comments.csv': Comment,
 }

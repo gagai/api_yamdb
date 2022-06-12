@@ -57,11 +57,6 @@ class Title(models.Model):
         verbose_name='Описание'
     )
     genre = models.ManyToManyField(Genre)
-    rating = models.PositiveSmallIntegerField(
-        null=True,
-        default=None,
-        verbose_name='Рейтинг произведения'
-    )
 
     class Meta:
         verbose_name = 'Произведение'
